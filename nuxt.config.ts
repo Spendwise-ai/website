@@ -16,5 +16,9 @@ export default defineNuxtConfig({
       },
     },
   },
+  routeRules: {
+    "/finances": { ssr: false },
+    "/login": { ssr: false },
+  },
 });
 
