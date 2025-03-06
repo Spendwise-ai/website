@@ -88,6 +88,7 @@ function generateColorFromString(str: string): string {
     searchable-lazy
     :searchable="search"
     creatable
+    variant="none"
   >
     <template #label>
       <template v-if="label">

@@ -194,15 +194,14 @@
         alt=""
       />
     </div>
-    {{ user }}
   </div>
 </template>
 <script setup lang="ts">
 const supabase = useSupabaseClient();
 
 const form = reactive({
-  email: "mustafa.y.elagib@gmail.com",
-  password: "TestPassword123+",
+  email: "",
+  password: "",
 });
 
 const signInWithEmailAndPassword = async () => {

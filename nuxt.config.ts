@@ -19,4 +19,13 @@ export default defineNuxtConfig({
       ignore: ["/finances", "/login"],
     },
   },
+  app: {
+    head: {
+      title: "SpendWyze", // default fallback title
+      htmlAttrs: {
+        lang: "en",
+      },
+      link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+    },
+  },
 });

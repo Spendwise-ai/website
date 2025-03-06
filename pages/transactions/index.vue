@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="-mx-6 -my-3">
     <TransactionTable />
   </div>
 </template>

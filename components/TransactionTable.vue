@@ -125,11 +125,7 @@ const newTransaction: TablesInsert<"transactions"> = {
       Add Transaction
     </UButton>
   </div>
-  <UTable
-    :rows="filteredRows"
-    :columns="columns"
-    class="overflow-x-auto scrollbar-none"
-  >
+  <UTable :rows="filteredRows" :columns="columns" class="overflow-hidden">
     <template #date-data="{ row, key, column, index }">
       <input
         :value="row[column.key]"
