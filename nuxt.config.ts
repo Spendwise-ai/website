@@ -26,7 +26,8 @@ export default defineNuxtConfig({
 
   routeRules: {
     "/**": { swr: false },
-    "/dashboard/**": { ssr: false },
+    "/finances": { ssr: false },
+    "/login": { ssr: false },
   },
 });
 
