@@ -18,8 +18,7 @@ export default defineNuxtConfig({
   },
   nitro: {
     prerender: {
-      routes: ["/"], // Only prerender the home page
-      ignore: ["/finances", "/login"], // Explicitly ignore these routes during prerendering
+      ignore: ["/finances", "/login", "/"], // Explicitly ignore these routes during prerendering
       failOnError: false,
     },
   },
