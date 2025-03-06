@@ -25,7 +25,7 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    "/**": { swr: true },
+    "/**": { swr: false },
     "/dashboard/**": { ssr: false },
   },
 });
