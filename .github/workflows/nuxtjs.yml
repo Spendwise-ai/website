@@ -24,7 +24,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 8 # Specify your pnpm version here
+          version: 10 # Specify your pnpm version here
 
       - name: Setup Node
         uses: actions/setup-node@v4

@@ -18,15 +18,8 @@ export default defineNuxtConfig({
   },
   nitro: {
     prerender: {
-      ignore: ["/finances", "/login", "/"], // Explicitly ignore these routes during prerendering
-      failOnError: false,
+      ignore: ["/finances", "/login"],
     },
-  },
-
-  routeRules: {
-    "/**": { swr: false },
-    "/finances": { ssr: false },
-    "/login": { ssr: false },
   },
 });
 
