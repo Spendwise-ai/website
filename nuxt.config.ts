@@ -1,10 +1,8 @@
+import tailwindcss from "@tailwindcss/vite";
 import tailwindScrollbar from "tailwind-scrollbar";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  app: {
-    baseURL: "/website",
-  },
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
   modules: ["@vueuse/nuxt", "@nuxtjs/supabase", "@nuxt/ui", "@nuxt/icon"],
@@ -23,6 +21,9 @@ export default defineNuxtConfig({
     prerender: {
       ignore: ["/finances", "/login"],
     },
+  },
+  vite: {
+    plugins: [tailwindcss()],
   },
 });
 
