@@ -1,6 +1,3 @@
-import tailwindcss from "@tailwindcss/vite";
-import tailwindScrollbar from "tailwind-scrollbar";
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
@@ -22,8 +19,4 @@ export default defineNuxtConfig({
       ignore: ["/finances", "/login"],
     },
   },
-  vite: {
-    plugins: [tailwindcss()],
-  },
 });
-
