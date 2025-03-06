@@ -20,7 +20,13 @@ export default defineNuxtConfig({
     prerender: {
       routes: ["/"], // Only prerender the home page
       ignore: ["/finances", "/login"], // Explicitly ignore these routes during prerendering
+      failOnError: false,
     },
+  },
+
+  routeRules: {
+    "/**": { swr: true },
+    "/dashboard/**": { ssr: false },
   },
 });
 
