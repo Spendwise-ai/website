@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/87ccf4ba-29a6-471f-9be2-f4469eeb1b7d/deploy-status)](https://app.netlify.com/sites/zingy-crisp-891d54/deploys)
+
 # Nuxt Minimal Starter
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
