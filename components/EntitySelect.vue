@@ -4,9 +4,9 @@ import type { Tables } from "~/types/database.types";
 
 const client = useSupabaseClient();
 
-const [selected] = defineModel<Tables<"entity"> | null>("modelValue", {}); // Only a single label selected, not an array
+const [selected] = defineModel<number>("modelValue", {}); // Only a single label selected, not an array
 
-const options = ref<Tables<"entity">[]>([]); // For storing the fetched options
+const [options] = defineModel("options", { default: [] });
 
 // Fetch the label options from Supabase
 onMounted(async () => {
@@ -24,10 +24,11 @@ onMounted(async () => {
 
 // Handle the label selection
 const label = computed({
-  get: () => selected.value,
+  get: () => options.value?.find((option) => option.id == selected.value),
   set: async (label: Tables<"entity">) => {
+    console.log("label", label);
     if (label.id) {
-      selected.value = label;
+      selected.value = label.id;
     } else {
       // Handle creating a new label if it doesn't exist (only if creatable option is used)
       const { data, error } = await client
@@ -41,7 +42,7 @@ const label = computed({
       if (error) {
         console.error("Error creating label:", error);
       } else {
-        selected.value = data;
+        selected.value = data.id;
         options.value.push(data); // Add new label to options
       }
     }
@@ -49,16 +50,6 @@ const label = computed({
 });
 
 const loading = ref(false);
-
-async function search(q: string) {
-  loading.value = true;
-
-  const { data } = await client.from("entity").select().ilike("name", `%${q}%`);
-
-  loading.value = false;
-
-  return data;
-}
 
 function hashCode(str: string): number {
   let hash = 0;
@@ -86,7 +77,8 @@ function generateColorFromString(str: string): string {
     required="true"
     option-attribute="name"
     searchable-lazy
-    :searchable="search"
+    searchable
+    :options="options"
     creatable
     variant="none"
   >

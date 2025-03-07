@@ -26,8 +26,7 @@
               <p
                 class="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center"
               >
-                Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui
-                lorem cupidatat commodo.
+                Track transactions Split Bills Save Money in tabungs with goals
               </p>
             </div>
             <div
