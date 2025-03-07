@@ -2,7 +2,7 @@
 
 ## Roadmap
 
-- [ ] Delete Transactions
+- [x] Delete Transactions
 - [ ] Update Transactions
 - [ ] View running balance
 - [ ] Filter transactions
