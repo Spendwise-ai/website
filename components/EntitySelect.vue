@@ -30,12 +30,11 @@ const label = computed({
     if (label.id) {
       selected.value = label.id;
     } else {
+      console.log("label", label);
       // Handle creating a new label if it doesn't exist (only if creatable option is used)
       const { data, error } = await client
         .from("entity") // Replace with your actual table name
-        .insert([
-          { name: label.name, color: generateColorFromString(label.name) },
-        ])
+        .insert([{ name: label, color: generateColorFromString(label) }])
         .select()
         .single();
 
@@ -43,7 +42,7 @@ const label = computed({
         console.error("Error creating label:", error);
       } else {
         selected.value = data.id;
-        options.value.push(data); // Add new label to options
+        options.value.push(data.id); // Add new label to options
       }
     }
   },
@@ -112,9 +111,9 @@ function generateColorFromString(str: string): string {
       <span class="flex-shrink-0">New label:</span>
       <span
         class="flex-shrink-0 w-2 h-2 mt-px rounded-full -mx-1"
-        :style="{ background: `#${generateColorFromString(option.name)}` }"
+        :style="{ background: `#${generateColorFromString(option)}` }"
       />
-      <span class="block truncate">{{ option.name }}</span>
+      <span class="block truncate">{{ option }}</span>
     </template>
   </USelectMenu>
 </template>

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-xs sm:gap-x-6 sm:px-6 lg:px-8"
+    class="z-40 flex shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-xs sm:gap-x-6 sm:px-6 lg:px-8"
   >
     <button
       type="button"
@@ -8,7 +8,7 @@
       @click="sidebarOpen = true"
     >
       <span class="sr-only">Open sidebar</span>
-      <Bars3Icon class="size-6" aria-hidden="true" />
+      <Icon name="lucide:menu" class="size-6" aria-hidden="true" />
     </button>
 
     <!-- Separator -->
@@ -105,5 +105,5 @@ const userNavigation = [
   { name: "Sign out", href: "#" },
 ];
 
-const sidebarOpen = ref(false);
+const sidebarOpen = defineModel("sideBarOpen", { default: false });
 </script>

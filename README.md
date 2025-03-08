@@ -19,3 +19,9 @@
 - [ ] Make date range picker look like notion
 - [ ] Make command prompt open on specific key
 - [ ] Form validate new transaction entry
+- [ ] Finalize Login Page
+- [ ] Add Social Login
+- [ ] Add Transaction category, name
+- [ ] Add running balance to transaction table
+- [ ] Add Accounts Page
+- [ ] Fix app shell in small breakpoints

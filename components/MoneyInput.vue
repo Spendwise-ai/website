@@ -15,7 +15,7 @@
       value-attribute="value"
       option-attribute="name"
       variant="none"
-      class="w-46 p-0"
+      class="p-0"
     />
   </div>
 </template>

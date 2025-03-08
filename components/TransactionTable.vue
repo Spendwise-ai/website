@@ -37,12 +37,16 @@ const { data: entities } = await useAsyncData("entities", async () => {
 });
 
 const { data: transactions } = await useAsyncData("transactions", async () => {
-  const { data } = await client
+  const { data, error } = await client
     .from("transactions")
     .select("*")
-    .order("date", { ascending: true })
+    .order("date", { ascending: false })
     .order("created_at", { ascending: true });
-  return data;
+
+  if (error) console.error(error);
+  const parsed = data?.map((d) => ({ ...d, date: new Date(d.date) }));
+
+  return parsed;
 });
 
 const items = (row: TablesInsert<"transactions">) => [
@@ -104,13 +108,13 @@ async function deleteTransaction(transaction) {
   );
 }
 
-const baseTransaction = {
+const baseTransaction: TablesInsert<"transactions"> = {
   name: "",
   sender: null,
   recipient: null,
   currency: "RM",
   amount: 0,
-  date: null,
+  date: new Date(),
 };
 const form = ref<TablesInsert<"transactions">>(baseTransaction);
 const loading = ref(false);
@@ -122,7 +126,7 @@ async function createTransaction(transaction) {
     .select("*")
     .single();
   transactions.value.push(data);
-  form.value = transaction;
+  form.value = { ...baseTransaction, date: transaction.date };
 
   loading.value = false;
 }
@@ -133,9 +137,9 @@ import { format } from "date-fns";
 
 <template>
   <div>
-    <div class="flow-root">
-      <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+    <div class="flow-root -mx-6">
+      <div class="overflow-x-auto">
+        <div class="inline-block min-w-full align-middle">
           <table class="min-w-full divide-y divide-gray-300">
             <thead>
               <tr>
@@ -194,6 +198,9 @@ import { format } from "date-fns";
                     <template #panel="{ close }">
                       <DatePicker
                         v-model="transaction.date"
+                        @update:model-value="
+                          updateTransaction({ id, date: $event })
+                        "
                         is-required
                         @close="close"
                       />

@@ -42,7 +42,11 @@
                   @click="sidebarOpen = false"
                 >
                   <span class="sr-only">Close sidebar</span>
-                  <XMarkIcon class="size-6 text-white" aria-hidden="true" />
+                  <Icon
+                    name="lucide:x"
+                    class="size-6 text-white"
+                    aria-hidden="true"
+                  />
                 </button>
               </div>
             </TransitionChild>
@@ -53,7 +57,7 @@
               <div class="flex h-16 shrink-0 items-center">
                 <img
                   class="h-8 w-auto"
-                  src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=white"
+                  src="~/assets/img/logo.svg"
                   alt="Your Company"
                 />
               </div>
@@ -71,10 +75,10 @@
                             'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
                           ]"
                         >
-                          <component
-                            :is="item.icon"
+                          <Icon
+                            :name="item.icon"
                             :class="[
-                              item.current
+                              item.href == $route.path
                                 ? 'text-white'
                                 : 'text-indigo-200 group-hover:text-white',
                               'size-6 shrink-0',
@@ -137,14 +141,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import {
   Dialog,
   DialogPanel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
   TransitionChild,
   TransitionRoot,
 } from "@headlessui/vue";
@@ -169,10 +168,5 @@ const { data: accounts } = await useAsyncData("accounts", async () => {
   return data;
 });
 
-const userNavigation = [
-  { name: "Your profile", href: "#" },
-  { name: "Sign out", href: "#" },
-];
-
-const sidebarOpen = ref(false);
+const sidebarOpen = defineModel("sidebarOpen", { default: false });
 </script>
