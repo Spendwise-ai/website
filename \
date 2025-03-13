@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { CalendarDate } from "@internationalized/date";
 import NumberFlow from "@number-flow/vue";
-import type { Table } from "@tanstack/vue-table";
 import { Activity, CreditCard, DollarSign, Users } from "lucide-vue-next";
 
 const dataCard = ref({
@@ -17,44 +15,37 @@ const dataCard = ref({
 
 const client = useSupabaseClient();
 
-const transactions = ref<any[]>([]);
-const dateRange = ref({
-  start: new CalendarDate(2024, 0, 20),
-  end: new CalendarDate(2024, 0, 20).add({ days: 20 }),
-});
-
-watchDeep(
-  dateRange,
-  async (newDateRange) => {
-    if (!newDateRange.start || !newDateRange.end) return;
-    const { data, error } = await client
+const { data: recentTransactions } = await useAsyncData(
+  "transactions",
+  async () => {
+    const { data } = await client
       .from("transactions")
-      .select("*, sender:sender_id(*),recipient:recipient_id(*)")
-      .gte("date", newDateRange.start.toString())
-      .lt("date", newDateRange.end.toString());
-    transactions.value = data;
-    dataCard.value = {
-      totalRevenue: 100,
-      totalRevenueDesc: 20.1 / 100,
-      subscriptions: 2350,
-      subscriptionsDesc: 180.5 / 100,
-      sales: 12234,
-      salesDesc: 45 / 100,
-      activeNow: 573,
-      activeNowDesc: 201,
-    };
+      .select("*, sender:sender_id(*), responder:responder_id(*)")
+      .limit(5);
+    return data;
   },
-  { immediate: true },
 );
+
+onMounted(() => {
+  dataCard.value = {
+    totalRevenue: 45231.89,
+    totalRevenueDesc: 20.1 / 100,
+    subscriptions: 2350,
+    subscriptionsDesc: 180.5 / 100,
+    sales: 12234,
+    salesDesc: 45 / 100,
+    activeNow: 573,
+    activeNowDesc: 201,
+  };
+});
 </script>
 
 <template>
   <div class="w-full flex flex-col gap-4">
-    {{ transactions }}
     <div class="flex flex-wrap items-center justify-between gap-2">
       <h2 class="text-2xl font-bold tracking-tight">Dashboard</h2>
       <div class="flex items-center space-x-2">
-        <BaseDateRangePicker v-model="dateRange" />
+        <BaseDateRangePicker />
         <Button>Download</Button>
       </div>
     </div>
@@ -64,7 +55,7 @@ watchDeep(
           <CardHeader
             class="flex flex-row items-center justify-between pb-2 space-y-0"
           >
-            <CardTitle class="text-sm font-medium">Current Balance</CardTitle>
+            <CardTitle class="text-sm font-medium"> Total Revenue </CardTitle>
             <DollarSign class="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -163,7 +154,7 @@ watchDeep(
           </CardHeader>
           <CardContent class="grid gap-8">
             <div
-              v-for="(transaction, idx) in transactions.slice(0, 5)"
+              v-for="(transaction, idx) in recentTransactions"
               :key="idx"
               class="flex items-center gap-4"
             >
@@ -177,14 +168,10 @@ watchDeep(
               </Avatar>
               <div class="grid gap-1">
                 <p class="text-sm font-medium leading-none">
-                  {{ transaction.sender.name }}
-                  {{ transaction.recipient.name }}
+                  {{ transaction.name }}
                 </p>
                 <p class="text-sm text-muted-foreground">
-                  {{ transaction.date }} .
-                  <span class="capitalize">
-                    {{ transaction.type }}
-                  </span>
+                  {{ transaction.email }}
                 </p>
               </div>
               <div class="ml-auto font-medium">
@@ -195,6 +182,7 @@ watchDeep(
                     currency: 'USD',
                     trailingZeroDisplay: 'stripIfInteger',
                   }"
+                  prefix="+"
                 />
               </div>
             </div>

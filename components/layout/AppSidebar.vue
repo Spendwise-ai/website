@@ -1,51 +1,58 @@
 <script setup lang="ts">
-import type { NavGroup, NavLink, NavSectionTitle } from '~/types/nav'
-import { navMenu, navMenuBottom } from '~/constants/menus'
+import type { NavGroup, NavLink, NavSectionTitle } from "~/types/nav";
+import { navMenu, navMenuBottom } from "~/constants/menus";
 
-function resolveNavItemComponent(item: NavLink | NavGroup | NavSectionTitle): any {
-  if ('children' in item)
-    return resolveComponent('LayoutSidebarNavGroup')
+function resolveNavItemComponent(
+  item: NavLink | NavGroup | NavSectionTitle,
+): any {
+  if ("children" in item) return resolveComponent("LayoutSidebarNavGroup");
 
-  return resolveComponent('LayoutSidebarNavLink')
+  return resolveComponent("LayoutSidebarNavLink");
 }
 
 const teams: {
-  name: string
-  logo: string
-  plan: string
+  name: string;
+  logo: string;
+  plan: string;
 }[] = [
   {
-    name: 'Acme Inc',
-    logo: 'i-lucide-gallery-vertical-end',
-    plan: 'Enterprise',
+    name: "Acme Inc",
+    logo: "i-lucide-gallery-vertical-end",
+    plan: "Enterprise",
   },
   {
-    name: 'Acme Corp.',
-    logo: 'i-lucide-audio-waveform',
-    plan: 'Startup',
+    name: "Acme Corp.",
+    logo: "i-lucide-audio-waveform",
+    plan: "Startup",
   },
   {
-    name: 'Evil Corp.',
-    logo: 'i-lucide-command',
-    plan: 'Free',
+    name: "Evil Corp.",
+    logo: "i-lucide-command",
+    plan: "Free",
   },
-]
+];
 
-const user: {
-  name: string
-  email: string
-  avatar: string
-} = {
-  name: 'Dian Pratama',
-  email: 'dianpratama2@gmail.com',
-  avatar: '/avatars/avatartion.png',
-}
+const user = useSupabaseUser();
+const client = useSupabaseClient();
 
-const { sidebar } = useAppSettings()
+const { data: profile } = await useAsyncData("profile", async () => {
+  const { data } = await client
+    .from("profiles")
+    .select()
+    .eq("id", user.value?.id as string)
+    .single();
+  return data;
+});
+
+const { sidebar } = useAppSettings();
 </script>
 
 <template>
-  <Sidebar :collapsible="sidebar.collapsible" :side="sidebar.side" :variant="sidebar.variant">
+  <Sidebar
+    :collapsible="sidebar.collapsible"
+    :side="sidebar.side"
+    :variant="sidebar.variant"
+  >
     <SidebarHeader>
       <LayoutSidebarNavHeader :teams="teams" />
       <Search />
@@ -55,19 +62,28 @@ const { sidebar } = useAppSettings()
         <SidebarGroupLabel v-if="nav.heading">
           {{ nav.heading }}
         </SidebarGroupLabel>
-        <component :is="resolveNavItemComponent(item)" v-for="(item, index) in nav.items" :key="index" :item="item" />
+        <component
+          :is="resolveNavItemComponent(item)"
+          v-for="(item, index) in nav.items"
+          :key="index"
+          :item="item"
+        />
       </SidebarGroup>
       <SidebarGroup class="mt-auto">
-        <component :is="resolveNavItemComponent(item)" v-for="(item, index) in navMenuBottom" :key="index" :item="item" size="sm" />
+        <component
+          :is="resolveNavItemComponent(item)"
+          v-for="(item, index) in navMenuBottom"
+          :key="index"
+          :item="item"
+          size="sm"
+        />
       </SidebarGroup>
     </SidebarContent>
     <SidebarFooter>
-      <LayoutSidebarNavFooter :user="user" />
+      <LayoutSidebarNavFooter :profile="profile" />
     </SidebarFooter>
     <SidebarRail />
   </Sidebar>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

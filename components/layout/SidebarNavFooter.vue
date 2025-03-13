@@ -1,21 +1,33 @@
 <script setup lang="ts">
-import { useSidebar } from '~/components/ui/sidebar'
+import { toast } from "vue-sonner";
+import { useSidebar } from "~/components/ui/sidebar";
+import type { Tables } from "~/types/database.types";
 
 defineProps<{
-  user: {
-    name: string
-    email: string
-    avatar: string
+  profile: Tables<"profiles">;
+}>();
+
+const { isMobile, setOpenMobile } = useSidebar();
+
+const client = useSupabaseClient();
+
+async function handleLogout() {
+  const { error } = await client.auth.signOut();
+  if (error) {
+    toast("Error Occurred", {
+      description: h(
+        "pre",
+        { class: "mt-2 w-[340px] rounded-md bg-slate-950 p-4" },
+        h("code", { class: "text-white" }, JSON.stringify(error, null, 2)),
+      ),
+    });
+  } else {
+    toast("Logged out successfully");
+    navigateTo("/login");
   }
-}>()
-
-const { isMobile, setOpenMobile } = useSidebar()
-
-function handleLogout() {
-  navigateTo('/login')
 }
 
-const showModalTheme = ref(false)
+const showModalTheme = ref(false);
 </script>
 
 <template>
@@ -28,14 +40,21 @@ const showModalTheme = ref(false)
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
           >
             <Avatar class="h-8 w-8 rounded-lg">
-              <AvatarImage :src="user.avatar" :alt="user.name" />
+              <AvatarImage :src="profile.avatar_url" :alt="profile.username" />
               <AvatarFallback class="rounded-lg">
-                {{ user.name.split(' ').map((n) => n[0]).join('') }}
+                {{
+                  profile.username
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                }}
               </AvatarFallback>
             </Avatar>
             <div class="grid flex-1 text-left text-sm leading-tight">
-              <span class="truncate font-semibold">{{ user.name }}</span>
-              <span class="truncate text-xs">{{ user.email }}</span>
+              <span class="truncate font-semibold"
+                >{{ profile.first_name }} {{ profile.last_name }}</span
+              >
+              <span class="truncate text-xs">{{ profile.email }}</span>
             </div>
             <Icon name="i-lucide-chevrons-up-down" class="ml-auto size-4" />
           </SidebarMenuButton>
@@ -48,14 +67,24 @@ const showModalTheme = ref(false)
           <DropdownMenuLabel class="p-0 font-normal">
             <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
               <Avatar class="h-8 w-8 rounded-lg">
-                <AvatarImage :src="user.avatar" :alt="user.name" />
+                <AvatarImage
+                  :src="profile.avatar_url"
+                  :alt="profile.username"
+                />
                 <AvatarFallback class="rounded-lg">
-                  {{ user.name.split(' ').map((n) => n[0]).join('') }}
+                  {{
+                    profile.username
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                  }}
                 </AvatarFallback>
               </Avatar>
               <div class="grid flex-1 text-left text-sm leading-tight">
-                <span class="truncate font-semibold">{{ user.name }}</span>
-                <span class="truncate text-xs">{{ user.email }}</span>
+                <span class="truncate font-semibold"
+                  >{{ profile.first_name }} {{ profile.last_name }}</span
+                >
+                <span class="truncate text-xs">{{ profile.email }}</span>
               </div>
             </div>
           </DropdownMenuLabel>
@@ -83,18 +112,7 @@ const showModalTheme = ref(false)
               Notifications
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem as-child>
-              <NuxtLink to="https://github.com/dianprata/nuxt-shadcn-dashboard" external target="_blank">
-                <Icon name="i-lucide-github" />
-                Github Repository
-              </NuxtLink>
-            </DropdownMenuItem>
-            <DropdownMenuItem @click="showModalTheme = true">
-              <Icon name="i-lucide-paintbrush" />
-              Theme
-            </DropdownMenuItem>
           </DropdownMenuGroup>
-          <DropdownMenuSeparator />
           <DropdownMenuItem @click="handleLogout">
             <Icon name="i-lucide-log-out" />
             Log out
@@ -117,6 +135,4 @@ const showModalTheme = ref(false)
   </Dialog>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

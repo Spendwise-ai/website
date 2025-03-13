@@ -1,16 +1,26 @@
 <script setup lang="ts">
-import type { Row } from '@tanstack/vue-table'
-import type { Task } from '../data/schema'
-import { computed } from 'vue'
-import { labels } from '../data/data'
-import { taskSchema } from '../data/schema'
+import type { Row } from "@tanstack/vue-table";
+import type { Task } from "../data/schema";
+import { computed } from "vue";
+import { labels } from "../data/data";
+import { taskSchema } from "../data/schema";
+import { types } from "../data/data";
 
 interface DataTableRowActionsProps {
-  row: Row<Task>
+  row: Row<Task>;
 }
-const props = defineProps<DataTableRowActionsProps>()
+const props = defineProps<DataTableRowActionsProps>();
 
-const task = computed(() => taskSchema.parse(props.row.original))
+const task = computed(() => taskSchema.parse(props.row.original));
+
+const client = useSupabaseClient();
+const deleteTask = async (transaction: Task) => {
+  console.log(transaction);
+  const { data } = await client
+    .from("transactions")
+    .delete()
+    .eq("id", transaction.id);
+};
 </script>
 
 <template>
@@ -26,21 +36,23 @@ const task = computed(() => taskSchema.parse(props.row.original))
     </DropdownMenuTrigger>
     <DropdownMenuContent align="end" class="w-[160px]">
       <DropdownMenuItem>Edit</DropdownMenuItem>
-      <DropdownMenuItem>Make a copy</DropdownMenuItem>
-      <DropdownMenuItem>Favorite</DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuSub>
         <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
         <DropdownMenuSubContent>
-          <DropdownMenuRadioGroup :value="task.label">
-            <DropdownMenuRadioItem v-for="label in labels" :key="label.value" :value="label.value">
+          <DropdownMenuRadioGroup :value="task.type">
+            <DropdownMenuRadioItem
+              v-for="label in types"
+              :key="label.value"
+              :value="label.value"
+            >
               {{ label.label }}
             </DropdownMenuRadioItem>
           </DropdownMenuRadioGroup>
         </DropdownMenuSubContent>
       </DropdownMenuSub>
       <DropdownMenuSeparator />
-      <DropdownMenuItem>
+      <DropdownMenuItem @click="deleteTask(row.original)">
         Delete
         <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
       </DropdownMenuItem>

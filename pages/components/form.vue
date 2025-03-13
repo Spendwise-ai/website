@@ -1,48 +1,46 @@
 <script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod'
-import { useForm } from 'vee-validate'
-import { toast } from 'vue-sonner'
-import * as z from 'zod'
+import { toTypedSchema } from "@vee-validate/zod";
+import { useForm } from "vee-validate";
+import { toast } from "vue-sonner";
+import * as z from "zod";
 
-const formSchema = toTypedSchema(z.object({
-  username: z
-    .string()
-    .min(2)
-    .max(50),
-  email: z
-    .string({ required_error: 'Please select an email to display.' })
-    .email(),
-  mobile: z
-    .boolean(),
-  type: z
-    .enum(['all', 'mentions', 'none'], {
-      required_error: 'You need to select a notification type.',
+const formSchema = toTypedSchema(
+  z.object({
+    username: z.string().min(2).max(50),
+    email: z
+      .string({ required_error: "Please select an email to display." })
+      .email(),
+    mobile: z.boolean(),
+    type: z.enum(["all", "mentions", "none"], {
+      required_error: "You need to select a notification type.",
     }),
-  duration: z
-    .array(z.number().min(0).max(60)),
-}))
+    duration: z.array(z.number().min(0).max(60)),
+  }),
+);
 
 const { isFieldDirty, handleSubmit } = useForm({
   validationSchema: formSchema,
   initialValues: {
     duration: [30],
   },
-})
+});
 
 const onSubmit = handleSubmit((values) => {
-  toast('You submitted the following values:', {
-    description: h('pre', { class: 'mt-2 w-[340px] rounded-md bg-slate-950 p-4' }, h('code', { class: 'text-white' }, JSON.stringify(values, null, 2))),
-  })
-})
+  toast("You submitted the following values:", {
+    description: h(
+      "pre",
+      { class: "mt-2 w-[340px] rounded-md bg-slate-950 p-4" },
+      h("code", { class: "text-white" }, JSON.stringify(values, null, 2)),
+    ),
+  });
+});
 </script>
 
 <template>
   <div class="flex flex-col gap-4">
     <div class="grid gap-2">
       <div>
-        <h2 class="text-2xl font-bold tracking-tight">
-          Form
-        </h2>
+        <h2 class="text-2xl font-bold tracking-tight">Form</h2>
         <p class="text-muted-foreground">
           Building forms with VeeValidate and Zod.
         </p>
@@ -75,13 +73,23 @@ const onSubmit = handleSubmit((values) => {
           <CardTitle>Basic</CardTitle>
         </CardHeader>
         <CardContent>
-          <div class="min-h-100px w-full flex items-center justify-center gap-4 md:min-h-200px">
+          <div
+            class="min-h-100px w-full flex items-center justify-center gap-4 md:min-h-200px"
+          >
             <form class="w-full md:w-2/3 space-y-6" @submit="onSubmit">
-              <FormField v-slot="{ componentField }" name="username" :validate-on-blur="!isFieldDirty">
+              <FormField
+                v-slot="{ componentField }"
+                name="username"
+                :validate-on-blur="!isFieldDirty"
+              >
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="shadcn" v-bind="componentField" />
+                    <Input
+                      type="text"
+                      placeholder="shadcn"
+                      v-bind="componentField"
+                    />
                   </FormControl>
                   <FormDescription>
                     This is your public display name.
@@ -96,7 +104,9 @@ const onSubmit = handleSubmit((values) => {
                   <Select v-bind="componentField">
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a verified email to display" />
+                        <SelectValue
+                          placeholder="Select a verified email to display"
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -120,13 +130,21 @@ const onSubmit = handleSubmit((values) => {
                   <FormMessage />
                 </FormItem>
               </FormField>
-              <FormField v-slot="{ value, handleChange }" type="checkbox" name="mobile">
-                <FormItem class="flex flex-row items-start gap-x-3 border rounded-md p-4 shadow space-y-0">
+              <FormField
+                v-slot="{ value, handleChange }"
+                type="checkbox"
+                name="mobile"
+              >
+                <FormItem
+                  class="flex flex-row items-start gap-x-3 border rounded-md p-4 shadow space-y-0"
+                >
                   <FormControl>
                     <Checkbox :checked="value" @update:checked="handleChange" />
                   </FormControl>
                   <div class="leading-none space-y-1">
-                    <FormLabel>Use different settings for my mobile devices</FormLabel>
+                    <FormLabel
+                      >Use different settings for my mobile devices</FormLabel
+                    >
                     <FormDescription>
                       You can manage your mobile notifications in the
                       <a href="/examples/forms">mobile settings</a> page.
@@ -164,9 +182,7 @@ const onSubmit = handleSubmit((values) => {
                         <FormControl>
                           <RadioGroupItem value="none" />
                         </FormControl>
-                        <FormLabel class="font-normal">
-                          Nothing
-                        </FormLabel>
+                        <FormLabel class="font-normal"> Nothing </FormLabel>
                       </FormItem>
                     </RadioGroup>
                   </FormControl>
@@ -193,9 +209,7 @@ const onSubmit = handleSubmit((values) => {
                 </FormItem>
               </FormField>
 
-              <Button type="submit">
-                Submit
-              </Button>
+              <Button type="submit"> Submit </Button>
             </form>
           </div>
         </CardContent>
@@ -204,6 +218,4 @@ const onSubmit = handleSubmit((values) => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
