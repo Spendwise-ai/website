@@ -6,6 +6,7 @@ import { priorities, statuses, types } from "../data/data";
 import DataTableFacetedFilter from "./DataTableFacetedFilter.vue";
 import DataTableViewOptions from "./DataTableViewOptions.vue";
 import AddTransactionSheet from "./AddTransactionSheet.vue";
+import DataTableFacetedGroupBy from "./DataTableFacetedGroupBy.vue";
 
 interface DataTableToolbarProps {
   table: Table<Task>;
@@ -37,6 +38,8 @@ const addTransactionModal = ref(false);
         title="Type"
         :options="types"
       />
+
+      <DataTableFacetedGroupBy :table="table" />
 
       <Button
         v-if="isFiltered"

@@ -5,6 +5,7 @@ import { computed } from "vue";
 import { labels } from "../data/data";
 import { taskSchema } from "../data/schema";
 import { types } from "../data/data";
+import { toast } from "vue-sonner";
 
 interface DataTableRowActionsProps {
   row: Row<Task>;
@@ -16,10 +17,15 @@ const task = computed(() => taskSchema.parse(props.row.original));
 const client = useSupabaseClient();
 const deleteTask = async (transaction: Task) => {
   console.log(transaction);
-  const { data } = await client
+  const { data, error } = await client
     .from("transactions")
     .delete()
     .eq("id", transaction.id);
+  if (error) {
+    toast("Error deleting transaction");
+  } else {
+    toast("Successfully deleted transaction");
+  }
 };
 </script>
 

@@ -1,10 +1,11 @@
+import { CalendarDate } from "@internationalized/date";
 import { z } from "zod";
 
 // We're keeping a simple non-relational schema here.
 // IRL, you will have a schema for your data models.
 export const taskSchema = z.object({
   name: z.string().min(0).max(50),
-  amount: z.number().min(0),
+  amount: z.number(),
   sender_id: z.number(),
   recipient_id: z.number(),
   type: z.string(),

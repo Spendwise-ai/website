@@ -257,7 +257,13 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      transaction_total_by_month: {
+        Row: {
+          month: string | null
+          total: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never

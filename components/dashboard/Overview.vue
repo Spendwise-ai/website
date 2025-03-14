@@ -1,20 +1,29 @@
 <script setup lang="ts">
-const data = [
-  { name: 'Jan', total: Math.floor(Math.random() * 5000) + 1000 },
-  { name: 'Feb', total: Math.floor(Math.random() * 5000) + 1000 },
-  { name: 'Mar', total: Math.floor(Math.random() * 5000) + 1000 },
-  { name: 'Apr', total: Math.floor(Math.random() * 5000) + 1000 },
-  { name: 'May', total: Math.floor(Math.random() * 5000) + 1000 },
-  { name: 'Jun', total: Math.floor(Math.random() * 5000) + 1000 },
-  { name: 'Jul', total: Math.floor(Math.random() * 5000) + 1000 },
-  { name: 'Aug', total: Math.floor(Math.random() * 5000) + 1000 },
-  { name: 'Sep', total: Math.floor(Math.random() * 5000) + 1000 },
-  { name: 'Oct', total: Math.floor(Math.random() * 5000) + 1000 },
-  { name: 'Nov', total: Math.floor(Math.random() * 5000) + 1000 },
-  { name: 'Dec', total: Math.floor(Math.random() * 5000) + 1000 },
-]
+import { format, parseISO } from "date-fns";
+
+const client = useSupabaseClient();
+const { data: transactions } = await useAsyncData(
+  "transactions",
+  async () => {
+    const { data } = await client
+      .from("transaction_total_by_month")
+      .select("month, total");
+    if (!data) return [];
+    const formatted = data.map((d) => ({
+      ...d,
+      month: d.month && format(d.month, "MMM"),
+    }));
+    return formatted;
+  },
+  { default: () => [] },
+);
 </script>
 
 <template>
-  <BarChart :data="data" :categories="['total']" index="name" :rounded-corners="4" />
+  <BarChart
+    :data="transactions"
+    :categories="['total']"
+    index="month"
+    :rounded-corners="4"
+  />
 </template>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import NumberFlow from "@number-flow/vue";
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -17,9 +18,12 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useVueTable,
+  getGroupedRowModel,
 } from "@tanstack/vue-table";
 import DataTablePagination from "./DataTablePagination.vue";
 import DataTableToolbar from "./DataTableToolbar.vue";
+import { watch } from "vue";
+import { groups } from "../data/data";
 
 interface DataTableProps {
   columns: ColumnDef<Task, any>[];
@@ -53,6 +57,7 @@ const table = useVueTable({
       return rowSelection.value;
     },
   },
+  enableGrouping: true,
   enableRowSelection: true,
   onSortingChange: (updaterOrValue) => valueUpdater(updaterOrValue, sorting),
   onColumnFiltersChange: (updaterOrValue) =>
@@ -67,7 +72,26 @@ const table = useVueTable({
   getSortedRowModel: getSortedRowModel(),
   getFacetedRowModel: getFacetedRowModel(),
   getFacetedUniqueValues: getFacetedUniqueValues(),
+  getGroupedRowModel: getGroupedRowModel(),
 });
+
+// Watch the grouping state and update column visibility
+watch(
+  () => table.getState().grouping,
+  (newGrouping) => {
+    const newVisibility: VisibilityState = {};
+    // Hide all columns that are currently grouped
+    newGrouping.forEach((columnId) => {
+      newVisibility[columnId] = false;
+    });
+    // Merge with existing visibility, ensuring non-grouped columns remain unchanged
+    columnVisibility.value = {
+      ...table.getState().columnVisibility,
+      ...newVisibility,
+    };
+  },
+  { immediate: true }, // Run immediately to apply initial state
+);
 </script>
 
 <template>
@@ -90,22 +114,70 @@ const table = useVueTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          <template v-if="table.getRowModel().rows?.length">
-            <TableRow
-              v-for="row in table.getRowModel().rows"
-              :key="row.id"
-              :data-state="row.getIsSelected() && 'selected'"
-            >
-              <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
-                <FlexRender
-                  :render="cell.column.columnDef.cell"
-                  :props="cell.getContext()"
-                />
-              </TableCell>
-            </TableRow>
-          </template>
+          <!-- Check if grouping is applied -->
+          <template v-if="table.getState().grouping.length > 0">
+            <!-- Grouped View -->
+            <template v-for="row in table.getRowModel().rows" :key="row.id">
+              <!-- Group Header Row -->
+              <TableRow>
+                <TableCell :colspan="columns.length" class="bg-neutral-50">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <Icon name="i-lucide-calendar" />
 
-          <TableRow v-else>
+                      <span class="font-semibold">
+                        {{ row.groupingValue }}
+                      </span>
+
+                      <span> ({{ row.subRows.length }} transactions) </span>
+                    </div>
+
+                    <NumberFlow
+                      :value="row.getValue('amount')"
+                      :format="{
+                        style: 'currency',
+                        currency: 'MYR',
+                        trailingZeroDisplay: 'stripIfInteger',
+                      }"
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
+              <!-- Data Rows for the Group -->
+              <template v-for="subRow in row.subRows" :key="subRow.id">
+                <TableRow :data-state="subRow.getIsSelected() && 'selected'">
+                  <TableCell
+                    v-for="cell in subRow.getVisibleCells()"
+                    :key="cell.id"
+                  >
+                    <FlexRender
+                      :render="cell.column.columnDef.cell"
+                      :props="cell.getContext()"
+                    />
+                  </TableCell>
+                </TableRow>
+              </template>
+            </template>
+          </template>
+          <!-- Ungrouped View -->
+          <template v-else>
+            <template v-if="table.getRowModel().rows?.length">
+              <TableRow
+                v-for="row in table.getRowModel().rows"
+                :key="row.id"
+                :data-state="row.getIsSelected() && 'selected'"
+              >
+                <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
+                  <FlexRender
+                    :render="cell.column.columnDef.cell"
+                    :props="cell.getContext()"
+                  />
+                </TableCell>
+              </TableRow>
+            </template>
+          </template>
+          <!-- No Results Case -->
+          <TableRow v-if="!table.getRowModel().rows?.length">
             <TableCell :colspan="columns.length" class="h-24 text-center">
               No results.
             </TableCell>
@@ -113,7 +185,6 @@ const table = useVueTable({
         </TableBody>
       </Table>
     </div>
-
     <DataTablePagination :table="table" />
   </div>
 </template>

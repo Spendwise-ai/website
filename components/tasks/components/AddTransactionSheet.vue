@@ -59,7 +59,7 @@ const { data: accounts } = await useAsyncData("accounts", async () => {
   <Sheet>
     <SheetTrigger as-child>
       <Button class="h-8 px-4 pr-3 lg:px-3">
-        Open
+        Add
         <Icon name="i-radix-icons-plus" class="ml-2 h-4 w-4" />
       </Button>
     </SheetTrigger>

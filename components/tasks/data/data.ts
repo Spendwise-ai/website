@@ -73,3 +73,7 @@ export const priorities = [
     icon: h(Icon, { name: "i-radix-icons-arrow-up" }),
   },
 ];
+
+export const groups = [
+  { label: "Date", icon: "i-lucide-calendar", value: "date" },
+];

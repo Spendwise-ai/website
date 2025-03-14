@@ -5,22 +5,22 @@ import type { Table } from "@tanstack/vue-table";
 import { Activity, CreditCard, DollarSign, Users } from "lucide-vue-next";
 
 const dataCard = ref({
-  totalRevenue: 0,
-  totalRevenueDesc: 0,
-  subscriptions: 0,
-  subscriptionsDesc: 0,
-  sales: 0,
-  salesDesc: 0,
-  activeNow: 0,
-  activeNowDesc: 0,
+  currentBalance: 0,
+  currentBalanceDesc: 0,
+  expenses: 0,
+  expensesDesc: 0,
+  income: 0,
+  incomeDesc: 0,
+  owed: 0,
+  owedDesc: 0,
 });
 
 const client = useSupabaseClient();
 
 const transactions = ref<any[]>([]);
 const dateRange = ref({
-  start: new CalendarDate(2024, 0, 20),
-  end: new CalendarDate(2024, 0, 20).add({ days: 20 }),
+  start: new CalendarDate(2025, 0, 20),
+  end: new CalendarDate(2025, 0, 20).add({ days: 20 }),
 });
 
 watchDeep(
@@ -30,18 +30,22 @@ watchDeep(
     const { data, error } = await client
       .from("transactions")
       .select("*, sender:sender_id(*),recipient:recipient_id(*)")
-      .gte("date", newDateRange.start.toString())
-      .lt("date", newDateRange.end.toString());
+      .filter("date", "gte", newDateRange.start.toString())
+      .filter("date", "lt", newDateRange.end.toString());
+    console.log(data);
     transactions.value = data;
+    const sum = transactions.value.reduce((n, { amount }) => n + amount, 0);
+
+    console.log(sum);
     dataCard.value = {
-      totalRevenue: 100,
-      totalRevenueDesc: 20.1 / 100,
-      subscriptions: 2350,
-      subscriptionsDesc: 180.5 / 100,
-      sales: 12234,
-      salesDesc: 45 / 100,
-      activeNow: 573,
-      activeNowDesc: 201,
+      currentBalance: sum,
+      currentBalanceDesc: 20.1 / 100,
+      expenses: 2350,
+      expensesDesc: 180.5 / 100,
+      income: 12234,
+      incomeDesc: 45 / 100,
+      owed: 573,
+      owedDesc: 201,
     };
   },
   { immediate: true },
@@ -50,7 +54,6 @@ watchDeep(
 
 <template>
   <div class="w-full flex flex-col gap-4">
-    {{ transactions }}
     <div class="flex flex-wrap items-center justify-between gap-2">
       <h2 class="text-2xl font-bold tracking-tight">Dashboard</h2>
       <div class="flex items-center space-x-2">
@@ -70,17 +73,17 @@ watchDeep(
           <CardContent>
             <div class="text-2xl font-bold">
               <NumberFlow
-                :value="dataCard.totalRevenue"
+                :value="dataCard.currentBalance"
                 :format="{
                   style: 'currency',
-                  currency: 'USD',
+                  currency: 'MYR',
                   trailingZeroDisplay: 'stripIfInteger',
                 }"
               />
             </div>
             <p class="text-xs text-muted-foreground">
               <NumberFlow
-                :value="dataCard.totalRevenueDesc"
+                :value="dataCard.currentBalanceDesc"
                 prefix="+"
                 :format="{ style: 'percent', minimumFractionDigits: 1 }"
               />
@@ -92,16 +95,23 @@ watchDeep(
           <CardHeader
             class="flex flex-row items-center justify-between pb-2 space-y-0"
           >
-            <CardTitle class="text-sm font-medium"> Subscriptions </CardTitle>
+            <CardTitle class="text-sm font-medium"> Expenses </CardTitle>
             <Users class="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div class="text-2xl font-bold">
-              <NumberFlow :value="dataCard.subscriptions" prefix="+" />
+              <NumberFlow
+                :value="dataCard.expenses"
+                :format="{
+                  style: 'currency',
+                  currency: 'MYR',
+                  trailingZeroDisplay: 'stripIfInteger',
+                }"
+              />
             </div>
             <p class="text-xs text-muted-foreground">
               <NumberFlow
-                :value="dataCard.subscriptionsDesc"
+                :value="dataCard.expensesDesc"
                 prefix="+"
                 :format="{ style: 'percent', minimumFractionDigits: 1 }"
               />
@@ -113,16 +123,23 @@ watchDeep(
           <CardHeader
             class="flex flex-row items-center justify-between pb-2 space-y-0"
           >
-            <CardTitle class="text-sm font-medium"> Sales </CardTitle>
+            <CardTitle class="text-sm font-medium"> Income </CardTitle>
             <CreditCard class="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div class="text-2xl font-bold">
-              <NumberFlow :value="dataCard.sales" prefix="+" />
+              <NumberFlow
+                :value="dataCard.income"
+                :format="{
+                  style: 'currency',
+                  currency: 'MYR',
+                  trailingZeroDisplay: 'stripIfInteger',
+                }"
+              />
             </div>
             <p class="text-xs text-muted-foreground">
               <NumberFlow
-                :value="dataCard.salesDesc"
+                :value="dataCard.incomeDesc"
                 prefix="+"
                 :format="{ style: 'percent', minimumFractionDigits: 1 }"
               />
@@ -134,16 +151,23 @@ watchDeep(
           <CardHeader
             class="flex flex-row items-center justify-between pb-2 space-y-0"
           >
-            <CardTitle class="text-sm font-medium"> Active Now </CardTitle>
+            <CardTitle class="text-sm font-medium">Owed</CardTitle>
             <Activity class="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div class="text-2xl font-bold">
-              <NumberFlow :value="dataCard.activeNow" prefix="+" />
+              <NumberFlow
+                :value="dataCard.owed"
+                :format="{
+                  style: 'currency',
+                  currency: 'MYR',
+                  trailingZeroDisplay: 'stripIfInteger',
+                }"
+              />
             </div>
             <p class="text-xs text-muted-foreground">
-              <NumberFlow :value="dataCard.activeNowDesc" prefix="+" /> since
-              last hour
+              <NumberFlow :value="dataCard.owedDesc" prefix="+" /> since last
+              hour
             </p>
           </CardContent>
         </Card>
@@ -167,14 +191,10 @@ watchDeep(
               :key="idx"
               class="flex items-center gap-4"
             >
-              <Avatar class="hidden h-9 w-9 sm:flex">
-                <AvatarFallback>{{
-                  transaction.sender.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")
-                }}</AvatarFallback>
-              </Avatar>
+              <img
+                src="/public/bank-logo/maybank.png"
+                class="hidden h-8 w-8 sm:block"
+              />
               <div class="grid gap-1">
                 <p class="text-sm font-medium leading-none">
                   {{ transaction.sender.name }}

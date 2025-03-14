@@ -63,6 +63,11 @@ export const columns: ColumnDef<Task>[] = [
 
     cell: ({ row }) => {
       return h("div", { class: "flex space-x-2" }, [
+        row.getValue("sender").provider &&
+          h("img", {
+            src: `/bank-logo/${row.getValue("sender").provider}.png`,
+            class: "w-6 h-6 rounded-full bg-white",
+          }),
         h(
           "span",
           { class: "max-w-[500px] truncate font-medium" },
@@ -88,6 +93,10 @@ export const columns: ColumnDef<Task>[] = [
   },
 
   {
+    aggregationFn: "sum",
+    aggregatedCell: ({ getValue }) => {
+      return `Total: ${getValue()}`;
+    },
     accessorKey: "amount",
     header: ({ column }) =>
       h(DataTableColumnHeader, { column, title: "Amount" }),
