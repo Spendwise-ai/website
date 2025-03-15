@@ -1,70 +1,69 @@
 <script setup lang="ts">
-import NumberFlow from "@number-flow/vue";
 import type {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
-} from "@tanstack/vue-table";
+} from "@tanstack/vue-table"
+import type { Task } from "../data/schema"
 
-import type { Task } from "../data/schema";
-import { valueUpdater } from "@/lib/utils";
+import { valueUpdater } from "@/lib/utils"
+import NumberFlow from "@number-flow/vue"
 import {
   FlexRender,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
+  getGroupedRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useVueTable,
-  getGroupedRowModel,
-} from "@tanstack/vue-table";
-import DataTablePagination from "./DataTablePagination.vue";
-import DataTableToolbar from "./DataTableToolbar.vue";
-import { watch } from "vue";
-import { groups } from "../data/data";
+} from "@tanstack/vue-table"
+import { watch } from "vue"
+import DataTablePagination from "./DataTablePagination.vue"
+import DataTableToolbar from "./DataTableToolbar.vue"
 
 interface DataTableProps {
-  columns: ColumnDef<Task, any>[];
-  data: Task[];
+  columns: ColumnDef<Task, any>[]
+  data: Task[]
 }
-const props = defineProps<DataTableProps>();
+const props = defineProps<DataTableProps>()
 
-const sorting = ref<SortingState>([]);
-const columnFilters = ref<ColumnFiltersState>([]);
-const columnVisibility = ref<VisibilityState>({});
-const rowSelection = ref({});
+const sorting = ref<SortingState>([])
+const columnFilters = ref<ColumnFiltersState>([])
+const columnVisibility = ref<VisibilityState>({})
+const rowSelection = ref({})
 
 const table = useVueTable({
   get data() {
-    return props.data;
+    return props.data
   },
   get columns() {
-    return props.columns;
+    return props.columns
   },
   state: {
     get sorting() {
-      return sorting.value;
+      return sorting.value
     },
     get columnFilters() {
-      return columnFilters.value;
+      return columnFilters.value
     },
     get columnVisibility() {
-      return columnVisibility.value;
+      return columnVisibility.value
     },
     get rowSelection() {
-      return rowSelection.value;
+      return rowSelection.value
     },
   },
   enableGrouping: true,
   enableRowSelection: true,
-  onSortingChange: (updaterOrValue) => valueUpdater(updaterOrValue, sorting),
-  onColumnFiltersChange: (updaterOrValue) =>
+  onSortingChange: updaterOrValue => valueUpdater(updaterOrValue, sorting),
+  onColumnFiltersChange: updaterOrValue =>
     valueUpdater(updaterOrValue, columnFilters),
-  onColumnVisibilityChange: (updaterOrValue) =>
+  onColumnVisibilityChange: updaterOrValue =>
     valueUpdater(updaterOrValue, columnVisibility),
-  onRowSelectionChange: (updaterOrValue) =>
+  onRowSelectionChange: updaterOrValue =>
     valueUpdater(updaterOrValue, rowSelection),
   getCoreRowModel: getCoreRowModel(),
   getFilteredRowModel: getFilteredRowModel(),
@@ -73,25 +72,25 @@ const table = useVueTable({
   getFacetedRowModel: getFacetedRowModel(),
   getFacetedUniqueValues: getFacetedUniqueValues(),
   getGroupedRowModel: getGroupedRowModel(),
-});
+})
 
 // Watch the grouping state and update column visibility
 watch(
   () => table.getState().grouping,
   (newGrouping) => {
-    const newVisibility: VisibilityState = {};
+    const newVisibility: VisibilityState = {}
     // Hide all columns that are currently grouped
     newGrouping.forEach((columnId) => {
-      newVisibility[columnId] = false;
-    });
+      newVisibility[columnId] = false
+    })
     // Merge with existing visibility, ensuring non-grouped columns remain unchanged
     columnVisibility.value = {
       ...table.getState().columnVisibility,
       ...newVisibility,
-    };
+    }
   },
   { immediate: true }, // Run immediately to apply initial state
-);
+)
 </script>
 
 <template>
@@ -100,16 +99,10 @@ watch(
     <div class="border rounded-md">
       <Table>
         <TableHeader>
-          <TableRow
-            v-for="headerGroup in table.getHeaderGroups()"
-            :key="headerGroup.id"
-          >
+          <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
             <TableHead v-for="header in headerGroup.headers" :key="header.id">
-              <FlexRender
-                v-if="!header.isPlaceholder"
-                :render="header.column.columnDef.header"
-                :props="header.getContext()"
-              />
+              <FlexRender v-if="!header.isPlaceholder" :render="header.column.columnDef.header"
+                :props="header.getContext()" />
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -132,28 +125,19 @@ watch(
                       <span> ({{ row.subRows.length }} transactions) </span>
                     </div>
 
-                    <NumberFlow
-                      :value="row.getValue('amount')"
-                      :format="{
-                        style: 'currency',
-                        currency: 'MYR',
-                        trailingZeroDisplay: 'stripIfInteger',
-                      }"
-                    />
+                    <NumberFlow :value="row.getValue('amount')" :format="{
+                      style: 'currency',
+                      currency: 'MYR',
+                      trailingZeroDisplay: 'stripIfInteger',
+                    }" />
                   </div>
                 </TableCell>
               </TableRow>
               <!-- Data Rows for the Group -->
               <template v-for="subRow in row.subRows" :key="subRow.id">
                 <TableRow :data-state="subRow.getIsSelected() && 'selected'">
-                  <TableCell
-                    v-for="cell in subRow.getVisibleCells()"
-                    :key="cell.id"
-                  >
-                    <FlexRender
-                      :render="cell.column.columnDef.cell"
-                      :props="cell.getContext()"
-                    />
+                  <TableCell v-for="cell in subRow.getVisibleCells()" :key="cell.id">
+                    <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
                   </TableCell>
                 </TableRow>
               </template>
@@ -162,16 +146,10 @@ watch(
           <!-- Ungrouped View -->
           <template v-else>
             <template v-if="table.getRowModel().rows?.length">
-              <TableRow
-                v-for="row in table.getRowModel().rows"
-                :key="row.id"
-                :data-state="row.getIsSelected() && 'selected'"
-              >
+              <TableRow v-for="row in table.getRowModel().rows" :key="row.id"
+                :data-state="row.getIsSelected() && 'selected'">
                 <TableCell v-for="cell in row.getVisibleCells()" :key="cell.id">
-                  <FlexRender
-                    :render="cell.column.columnDef.cell"
-                    :props="cell.getContext()"
-                  />
+                  <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
                 </TableCell>
               </TableRow>
             </template>

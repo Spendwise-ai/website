@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { Sonner } from "@/components/ui/sonner";
-import { ConfigProvider } from "radix-vue";
+import { Sonner } from "@/components/ui/sonner"
+import { ConfigProvider } from "radix-vue"
 
-const colorMode = useColorMode();
+const colorMode = useColorMode()
 
 const color = computed(() =>
   colorMode.value === "dark" ? "#09090b" : "#ffffff",
-);
+)
 
-const { theme, radius } = useCustomize();
+const { theme, radius } = useCustomize()
 
 useHead({
   meta: [
@@ -24,10 +24,10 @@ useHead({
     class: computed(() => `theme-${theme.value}`),
     style: computed(() => `--radius: ${radius.value}rem;`),
   },
-});
+})
 
-const title = "Spendwyze";
-const description = "Dashboard for your money";
+const title = "Spendwyze"
+const description = "Dashboard for your money"
 
 useSeoMeta({
   title,
@@ -40,19 +40,19 @@ useSeoMeta({
   twitterDescription: description,
   twitterImage: "https://nuxt-shadcn-dashboard.vercel.app/social-card.png",
   twitterCard: "summary_large_image",
-});
+})
 
-const router = useRouter();
+const router = useRouter()
 
 defineShortcuts({
   "G-H": () => router.push("/"),
   "G-E": () => router.push("/email"),
-});
+})
 
-const useIdFunction = () => useId();
+const useIdFunction = () => useId()
 
-const textDirection = useTextDirection({ initialValue: "ltr" });
-const dir = computed(() => (textDirection.value === "rtl" ? "rtl" : "ltr"));
+const textDirection = useTextDirection({ initialValue: "ltr" })
+const dir = computed(() => (textDirection.value === "rtl" ? "rtl" : "ltr"))
 </script>
 
 <template>

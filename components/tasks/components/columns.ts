@@ -3,11 +3,11 @@ import type { ColumnDef } from "@tanstack/vue-table";
 import type { Task } from "../data/schema";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { format, formatDistance, formatRelative, subDays } from "date-fns";
 import { h } from "vue";
 import { labels, priorities, types } from "../data/data";
 import DataTableColumnHeader from "./DataTableColumnHeader.vue";
 import DataTableRowActions from "./DataTableRowActions.vue";
-import { format, formatDistance, formatRelative, subDays } from "date-fns";
 
 export const columns: ColumnDef<Task>[] = [
   {

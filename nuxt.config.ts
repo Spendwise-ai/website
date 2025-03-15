@@ -1,6 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import pkg from "./package.json";
+import pkg from "./package.json"
+
 export default defineNuxtConfig({
+
   devtools: { enabled: true },
 
   modules: [
@@ -12,6 +14,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@nuxtjs/color-mode",
     "@nuxtjs/supabase",
+    "@nuxthub/core",
   ],
 
   css: ["@unocss/reset/tailwind.css"],
@@ -60,7 +63,10 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       version: pkg.version,
+
+      finverseAppId: 'FINVERSE_APP_ID', // can be overridden by NUXT_API_SECRET environment variable
+      finverseClientId: 'FINVERSE_CLIENT_ID', // can be overridden by NUXT_API_SECRET environment variable
+      finverseClientSecret: 'FINVERSE_CLIENT_SECRET', // can be overridden by NUXT_API_SECRET environment variable
     },
   },
-});
-
+})
