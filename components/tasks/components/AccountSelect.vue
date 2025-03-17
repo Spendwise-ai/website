@@ -49,7 +49,7 @@ const selected = computed({
       </Button>
     </PopoverTrigger>
     <PopoverContent class="w-[225px] p-0">
-      <Command v-model="selected">
+      <Command v-model="selected" name="name">
         <CommandInput placeholder="Search entity..." />
         <CommandEmpty>No entity found.</CommandEmpty>
         <CommandList>

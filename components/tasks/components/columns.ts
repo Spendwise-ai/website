@@ -8,6 +8,7 @@ import { h } from "vue";
 import { labels, priorities, types } from "../data/data";
 import DataTableColumnHeader from "./DataTableColumnHeader.vue";
 import DataTableRowActions from "./DataTableRowActions.vue";
+import { Icon } from "#components";
 
 export const columns: ColumnDef<Task>[] = [
   {
@@ -54,6 +55,12 @@ export const columns: ColumnDef<Task>[] = [
         ),
       ]);
     },
+
+    enableGrouping: true,
+    // aggregatedCell:
+    //
+    sortDescFirst: true,
+    enablePinning: true,
   },
 
   {
@@ -155,7 +162,6 @@ export const columns: ColumnDef<Task>[] = [
     cell: ({ row }) => {
       return h("div", { class: "flex space-x-2" }, [
         h(Badge, { class: "max-w-[500px] truncate font-medium" }, [
-          // h(Icon, { class: "mr-2 h-4 w-4 text-muted-foreground" }),
           row.getValue("category").name,
         ]),
       ]);

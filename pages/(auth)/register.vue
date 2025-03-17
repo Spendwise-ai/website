@@ -1,16 +1,14 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: 'blank',
-})
+  layout: "blank",
+});
 </script>
 
 <template>
   <LayoutAuth>
     <div class="grid mx-auto max-w-sm gap-6">
       <div class="flex flex-col text-center space-y-2">
-        <h1 class="text-2xl font-semibold tracking-tight">
-          Create an account
-        </h1>
+        <h1 class="text-2xl font-semibold tracking-tight">Create an account</h1>
         <p class="text-sm text-muted-foreground">
           Enter your email below to create your account
         </p>
@@ -46,6 +44,4 @@ definePageMeta({
   </LayoutAuth>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

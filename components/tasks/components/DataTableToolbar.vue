@@ -2,11 +2,12 @@
 import type { Table } from "@tanstack/vue-table";
 import type { Task } from "../data/schema";
 import { computed } from "vue";
-import { priorities, statuses, types } from "../data/data";
+import { types } from "../data/data";
 import DataTableFacetedFilter from "./DataTableFacetedFilter.vue";
 import DataTableViewOptions from "./DataTableViewOptions.vue";
-import AddTransactionSheet from "./AddTransactionSheet.vue";
+import DataTableSheet from "./DataTableSheet.vue";
 import DataTableFacetedGroupBy from "./DataTableFacetedGroupBy.vue";
+import TransactionForm from "./TransactionForm.vue";
 
 interface DataTableToolbarProps {
   table: Table<Task>;
@@ -17,8 +18,6 @@ const props = defineProps<DataTableToolbarProps>();
 const isFiltered = computed(
   () => props.table.getState().columnFilters.length > 0,
 );
-
-const addTransactionModal = ref(false);
 </script>
 
 <template>
@@ -53,7 +52,9 @@ const addTransactionModal = ref(false);
     </div>
 
     <div class="flex items-center space-x-2 flex-">
-      <AddTransactionSheet />
+      <DataTableSheet v-slot="{ close }">
+        <TransactionForm @submit="close()" />
+      </DataTableSheet>
       <DataTableViewOptions :table="table" />
     </div>
   </div>

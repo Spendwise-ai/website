@@ -47,12 +47,30 @@ export const types = [
   {
     value: "expense",
     label: "Expense",
-    icon: h(Icon, { name: "i-radix-icons-arrow-top-right" }),
+    icon: h(Icon, { name: "i-lucide-wallet" }),
   },
   {
-    value: "todo",
-    label: "Todo",
-    icon: h(Icon, { name: "i-radix-icons-arrow-bottom-right" }),
+    value: "transfer",
+    label: "Transfer",
+    icon: h(Icon, { name: "i-lucide-landmark" }),
+  },
+
+  {
+    value: "income",
+    label: "Income",
+    icon: h(Icon, { name: "i-lucide-hand-coins" }),
+  },
+
+  {
+    value: "subscription",
+    label: "Subscription",
+    icon: h(Icon, { name: "i-lucide-calendar-sync" }),
+  },
+
+  {
+    value: "loan",
+    label: "Loan",
+    icon: h(Icon, { name: "i-lucide-receipt" }),
   },
 ];
 

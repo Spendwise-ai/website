@@ -1,53 +1,60 @@
 <script setup lang="ts">
-const client = useSupabaseClient()
-const user = useSupabaseUser()
+const client = useSupabaseClient();
+const user = useSupabaseUser();
 const { data: accounts } = await useAsyncData("accounts", async () => {
   const { data } = await client
     .from("entity")
-    .select(
-      "*",
-    )
-    .eq('user_id', user.value?.id as string)
-  return data
-})
+    .select("*")
+    .eq("user_id", user.value?.id as string);
+  return data;
+});
 
-const config = useRuntimeConfig()
+const url = ref();
 
-async function linkFinverse() {
-  const body = {
-    client_id: config.finverseClientId,
-    client_secret: config.finverseClientSecret,
-    grant_type: "grant_type",
-  }
-
-  const requestOptions = {
-    method: 'POST',
-    headers: {
-      "X-Request-Id": "setup_on_developer_portal-1742007028",
-      "Content-Type": "application/json",
+const link = async () => {
+  const { data: tokenRequestData, error: tokenRequestError } = await useFetch(
+    "/finverse/token",
+    {
+      pick: ["access_token"],
     },
-    body: JSON.stringify(body),
-    redirect: 'follow',
-  }
+  );
+  console.log(tokenRequestData.value?.access_token);
+  const { data: linkRequestData, error: linkRequestError } = await useFetch(
+    "/finverse/link",
+    {
+      pick: ["link_url"],
+    },
+  );
+  console.log(linkRequestData.value?.link_url);
+  url.value = linkRequestData.value?.link_url;
+};
 
-  fetch("https://api.prod.finverse.net/auth/customer/token", requestOptions)
-    .then(response => response.text())
-    .then(result => console.log(result))
-    .catch(error => console.log('error', error))
-}
+// add a listener so we get the message sent by the iframe
+const receiveMessage = (message: any) => {
+  if (message.data === "close") {
+    // do whatever is required to close the iframe. The linking did not succeeded due to user pressing the close button.
+    url.value = false;
+  }
+  if (message.data === "success") {
+    // do whatever is required to close the iframe
+    url.value = false;
+    // Since the linking was successful display the next screen
+  }
+};
+
+onMounted(() => {
+  window.addEventListener("message", receiveMessage, false);
+});
 </script>
 
 <template>
   <div class="-m-4 lg:-m-6">
-    {{ config.finverseAppId }}
-    {{ config.finverseClientId }}
-    {{ config.finverseClientSecret }}
     <div v-for="account in accounts">
       {{ account }}
     </div>
 
-    <Button @click="linkFinverse()">
-      Add Account
-    </Button>
+    <FinverseLinkInstitutionDialog :url="url" />
+
+    <Button @click="link"> Add Account </Button>
   </div>
 </template>
