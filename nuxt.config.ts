@@ -62,14 +62,21 @@ export default defineNuxtConfig({
     },
   },
 
-  hub: {},
-
-  nitro: {},
-
-  auth: {
-    // ... other auth config
-    exclude: ["/auth/signup"], // Exclude the sign-up page from authentication
+  hub: {
+    database: true,
   },
+
+  nitro: {
+    experimental: {
+      openAPI: true,
+      // tasks: true,
+    },
+  },
+
+  // auth: {
+  //   // ... other auth config
+  //   exclude: ["/auth/signup"], // Exclude the sign-up page from authentication
+  // },
   runtimeConfig: {
     finverseAppId: "FINVERSE_APP_ID", // can be overridden by NUXT_API_SECRET environment variable
     finverseClientId: "FINVERSE_CLIENT_ID", // can be overridden by NUXT_API_SECRET environment variable
@@ -79,9 +86,9 @@ export default defineNuxtConfig({
     },
   },
   devServer: {
-    https: {
-      key: "./server.key",
-      cert: "./server.crt",
-    },
+    // https: {
+    //   key: "./server.key",
+    //   cert: "./server.crt",
+    // },
   },
 });

@@ -37,12 +37,16 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
+    "preview": "nuxt build && npx nuxthub preview",
     "postinstall": "nuxt prepare",
     "typecheck": "vue-tsc --noEmit",
     "lint": "eslint .",
     "format": "eslint --fix .",
-    "generate:types": "supabase gen types typescript --project-id vumnedrvhumbofvvhium --schema public > types/database.types.ts"
+    "generate:types": "supabase gen types typescript --project-id vumnedrvhumbofvvhium --schema public > types/database.types.ts",
+    "db:migrate": "drizzle-kit migrate --config=drizzle.config.ts",
+    "db:generate": "drizzle-kit generate --config=drizzle.config.ts",
+    "db:push": "drizzle-kit push --config=drizzle.config.ts",
+    "auth:generate": "npx @better-auth/cli generate --config ./server/utils/auth.ts --"
   },
   "dependencies": {
     "@internationalized/date": "^3.6.0",
@@ -51,8 +55,11 @@
     "@tanstack/vue-table": "^8.20.5",
     "@unovis/ts": "^1.5.0",
     "@unovis/vue": "^1.5.0",
+    "better-auth": "^1.2.7",
+    "drizzle-orm": "^0.43.1",
     "embla-carousel": "^8.5.1",
-    "embla-carousel-vue": "^8.5.1"
+    "embla-carousel-vue": "^8.5.1",
+    "postgres": "^3.4.5"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.12.0",
@@ -70,6 +77,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "drizzle-kit": "^0.31.1",
     "eslint": "^9.17.0",
     "eslint-plugin-format": "^0.1.3",
     "lucide-vue-next": "^0.469.0",
@@ -87,6 +95,7 @@
     "vue-router": "^4.5.0",
     "vue-sonner": "^1.3.0",
     "vue-tsc": "^2.1.10",
+    "wrangler": "^4.14.4",
     "zod": "^3.24.1"
   },
   "packageManager": "pnpm@10.5.2+sha512.da9dc28cd3ff40d0592188235ab25d3202add8a207afbedc682220e4a0029ffbff4562102b9e6e46b4e3f9e8bd53e6d05de48544b0c57d4b0179e22c76d1199b"

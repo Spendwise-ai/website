@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "PostgreSQL Server": {
+      "Name": "SpendWyze PostgreSQL Server",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "Username": "postgres",
+      "MaintenanceDB": "spendwyze",
+      "SSLMode": "prefer"
+    }
+  }
+}

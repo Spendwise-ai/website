@@ -1,0 +1,25 @@
+# name = "your-nuxthub-app"
+# main = ".output/server/index.mjs"
+# compatibility_date = "2023-08-15"
+# workers_dev = true
+
+# Route configuration - adjust as needed
+# routes = [
+#   { pattern = "your-domain.com/*", zone_id = "your-zone-id" }
+# ]
+
+# KV Namespace configuration (if needed)
+# [[kv_namespaces]]
+# binding = "MY_KV_NAMESPACE"
+# id = "your-kv-namespace-id"
+
+# D1 Database configuration (required for NuxtHub)
+# [[d1_databases]]
+# binding = "DB" # Important: This binding name must match what NuxtHub expects
+# database_name = "your_database_name"
+# database_id = "your-d1-database-id" # You'll get this from Cloudflare dashboard
+
+# Environment variables
+# [vars]
+# NODE_ENV = "production"
+# NITRO_PRESET = "cloudflare-pages"
